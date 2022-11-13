@@ -1,0 +1,10 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://34.95.31.158:8080
+functions:
+  getloc:
+    lang: python3-flask-debian
+    handler: ./getloc
+    image: us.gcr.io/nth-agent-362522/getloc:latest
+

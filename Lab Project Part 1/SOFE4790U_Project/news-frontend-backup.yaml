@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: news-frontend-backup
+  name: news-frontend-backup
+  #namespace: admin-che
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
+      #nodePort: 31111
+  selector:
+    app: news-frontend-backup
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: news-frontend-backup
+  #namespace: admin-che
+  labels:
+    app: news-frontend-backup
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: news-frontend-backup
+  template:
+    metadata:
+      labels:
+        app: news-frontend-backup
+    spec:
+      containers:
+        - env:
+            - name: NODE_PORT
+              value: "8080"
+            - name: NODE_IP
+              value: "34.95.19.35"                       #todo: replace <backend IP address> with the IP address of the backend component
+          image: us.gcr.io/nth-agent-362522/news-frontend             #todo: replace <project_ID> with your actual project_ID 
+          name: news-frontend-backup
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80

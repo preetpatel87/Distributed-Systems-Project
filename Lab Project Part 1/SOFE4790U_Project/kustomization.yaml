@@ -1,0 +1,3 @@
+resources:
+  - postgis.yaml
+  - postgis-pvc.yaml

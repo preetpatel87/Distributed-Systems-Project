@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: news-backend
+  name: news-backend
+  #namespace: admin-che
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8080
+      targetPort: 8080
+      #nodePort: 30000
+  selector:
+    app: news-backend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: news-backend
+  #namespace: admin-che
+  labels:
+    app: news-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: news-backend
+  template:
+    metadata:
+      labels:
+        app: news-backend
+    spec:
+      containers:
+        - env:
+            - name: backend.nlp.url
+              value: http://34.95.31.158:8080/function/getloc
+            - name: quarkus.datasource.jdbc.url
+              value: jdbc:postgresql://postgis:5400/news?user=postgres&password=banane
+          image: us.gcr.io/nth-agent-362522/news-backend          #todo: replace <project_ID> with your actual project_ID 
+          name: news-backend
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              cpu: 500m
+            requests:
+              cpu: 500m
